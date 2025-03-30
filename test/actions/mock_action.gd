@@ -16,7 +16,7 @@ func before_run(actor: Node, blackboard: Blackboard) -> void:
 	started_running.emit(actor, blackboard)
 
 
-func tick(_actor: Node, _blackboard: Blackboard) -> int:
+func tick(_actor: Node, _blackboard: Blackboard, _delta: float) -> int:
 	if tick_count < running_frame_count:
 		tick_count += 1
 		return RUNNING
@@ -24,10 +24,10 @@ func tick(_actor: Node, _blackboard: Blackboard) -> int:
 		return final_result
 
 
-func interrupt(actor: Node, blackboard: Blackboard) -> void:
+func interrupt(actor: Node, blackboard: Blackboar, _delta: float) -> void:
 	interrupted.emit(actor, blackboard)
 
 
-func after_run(actor: Node, blackboard: Blackboard) -> void:
+func after_run(actor: Node, blackboard: Blackboard, _delta: float) -> void:
 	tick_count = 0
 	stopped_running.emit(actor, blackboard)

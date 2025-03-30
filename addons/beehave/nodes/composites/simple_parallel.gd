@@ -37,14 +37,14 @@ func _get_configuration_warnings() -> PackedStringArray:
 	return warnings
 
 
-func tick(actor, blackboard: Blackboard):
+func tick(actor: Node, blackboard: Blackboard, delta: float):
 	for c in get_children():
 		var node_index: int = c.get_index()
 		if node_index == 0 and not main_task_finished:
 			if c != running_child:
 				c.before_run(actor, blackboard)
 
-			var response: int = c._safe_tick(actor, blackboard)
+			var response: int = c._safe_tick(actor, blackboard, delta)
 			if can_send_message(blackboard):
 				BeehaveDebuggerMessages.process_tick(c.get_instance_id(), response, blackboard.get_debug_data())
 
@@ -68,7 +68,7 @@ func tick(actor, blackboard: Blackboard):
 			if secondary_node_repeat_count == 0 or secondary_node_repeat_left > 0:
 				if not secondary_node_running:
 					c.before_run(actor, blackboard)
-				var subtree_response = c._safe_tick(actor, blackboard)
+				var subtree_response = c._safe_tick(actor, blackboard, delta)
 				if subtree_response != RUNNING:
 					secondary_node_running = false
 					c.after_run(actor, blackboard)

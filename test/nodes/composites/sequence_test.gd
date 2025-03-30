@@ -16,7 +16,7 @@ var action1: ActionLeaf
 var action2: ActionLeaf
 var actor: Node
 var blackboard: Blackboard
-
+var delta: float # Default delta so it can run 
 
 func before_test() -> void:
 	tree = auto_free(load(__tree).new())
@@ -35,16 +35,16 @@ func before_test() -> void:
 
 
 func test_always_executing_all_successful_nodes() -> void:
-	assert_that(sequence.tick(actor, blackboard)).is_equal(BeehaveNode.SUCCESS)
-	assert_that(sequence.tick(actor, blackboard)).is_equal(BeehaveNode.SUCCESS)
+	assert_that(sequence.tick(actor, blackboard, delta)).is_equal(BeehaveNode.SUCCESS)
+	assert_that(sequence.tick(actor, blackboard, delta)).is_equal(BeehaveNode.SUCCESS)
 	assert_that(action1.count).is_equal(2)
 	assert_that(action2.count).is_equal(2)
 
 
 func test_never_execute_second_when_first_is_failing() -> void:
 	action1.status = BeehaveNode.FAILURE
-	assert_that(sequence.tick(actor, blackboard)).is_equal(BeehaveNode.FAILURE)
-	assert_that(sequence.tick(actor, blackboard)).is_equal(BeehaveNode.FAILURE)
+	assert_that(sequence.tick(actor, blackboard, delta)).is_equal(BeehaveNode.FAILURE)
+	assert_that(sequence.tick(actor, blackboard, delta)).is_equal(BeehaveNode.FAILURE)
 	assert_that(action1.count).is_equal(2)
 	assert_that(action2.count).is_equal(0)
 
@@ -52,12 +52,12 @@ func test_never_execute_second_when_first_is_failing() -> void:
 func test_not_interrupt_second_when_first_is_failing() -> void:
 	action1.status = BeehaveNode.SUCCESS
 	action2.status = BeehaveNode.RUNNING
-	assert_that(sequence.tick(actor, blackboard)).is_equal(BeehaveNode.RUNNING)
+	assert_that(sequence.tick(actor, blackboard, delta)).is_equal(BeehaveNode.RUNNING)
 	assert_that(action1.count).is_equal(1)
 	assert_that(action2.count).is_equal(1)
 
 	action1.status = BeehaveNode.FAILURE
-	assert_that(sequence.tick(actor, blackboard)).is_equal(BeehaveNode.RUNNING)
+	assert_that(sequence.tick(actor, blackboard, delta)).is_equal(BeehaveNode.RUNNING)
 	assert_that(action1.count).is_equal(1)
 	assert_that(action2.count).is_equal(2)
 
@@ -65,12 +65,12 @@ func test_not_interrupt_second_when_first_is_failing() -> void:
 func test_not_interrupting_second_when_first_is_running() -> void:
 	action1.status = BeehaveNode.SUCCESS
 	action2.status = BeehaveNode.RUNNING
-	assert_that(sequence.tick(actor, blackboard)).is_equal(BeehaveNode.RUNNING)
+	assert_that(sequence.tick(actor, blackboard, delta)).is_equal(BeehaveNode.RUNNING)
 	assert_that(action1.count).is_equal(1)
 	assert_that(action2.count).is_equal(1)
 
 	action1.status = BeehaveNode.RUNNING
-	assert_that(sequence.tick(actor, blackboard)).is_equal(BeehaveNode.RUNNING)
+	assert_that(sequence.tick(actor, blackboard, delta)).is_equal(BeehaveNode.RUNNING)
 	assert_that(action1.count).is_equal(1)
 	assert_that(action2.count).is_equal(2)
 
@@ -78,8 +78,8 @@ func test_not_interrupting_second_when_first_is_running() -> void:
 func test_restart_when_child_returns_failure() -> void:
 	action1.status = BeehaveNode.SUCCESS
 	action2.status = BeehaveNode.FAILURE
-	assert_that(sequence.tick(actor, blackboard)).is_equal(BeehaveNode.FAILURE)
-	assert_that(sequence.tick(actor, blackboard)).is_equal(BeehaveNode.FAILURE)
+	assert_that(sequence.tick(actor, blackboard, delta)).is_equal(BeehaveNode.FAILURE)
+	assert_that(sequence.tick(actor, blackboard, delta)).is_equal(BeehaveNode.FAILURE)
 	assert_that(action1.count).is_equal(2)
 	assert_that(action2.count).is_equal(2)
 
@@ -87,8 +87,8 @@ func test_restart_when_child_returns_failure() -> void:
 func test_tick_again_when_child_returns_running() -> void:
 	action1.status = BeehaveNode.SUCCESS
 	action2.status = BeehaveNode.RUNNING
-	assert_that(sequence.tick(actor, blackboard)).is_equal(BeehaveNode.RUNNING)
-	assert_that(sequence.tick(actor, blackboard)).is_equal(BeehaveNode.RUNNING)
+	assert_that(sequence.tick(actor, blackboard, delta)).is_equal(BeehaveNode.RUNNING)
+	assert_that(sequence.tick(actor, blackboard, delta)).is_equal(BeehaveNode.RUNNING)
 	assert_that(action1.count).is_equal(1)
 	assert_that(action2.count).is_equal(2)
 
@@ -111,13 +111,13 @@ func test_not_interrupt_first_after_finished() -> void:
 	action2.status = BeehaveNode.SUCCESS
 	action3.status = BeehaveNode.RUNNING
 
-	assert_that(sequence.tick(actor, blackboard)).is_equal(BeehaveNode.RUNNING)
+	assert_that(sequence.tick(actor, blackboard, delta)).is_equal(BeehaveNode.RUNNING)
 	assert_that(action1.count).is_equal(1)
 	assert_that(action2.count).is_equal(0)
 	assert_that(action3.count).is_equal(0)
 
 	action1.status = BeehaveNode.SUCCESS
-	assert_that(sequence.tick(actor, blackboard)).is_equal(BeehaveNode.RUNNING)
+	assert_that(sequence.tick(actor, blackboard, delta)).is_equal(BeehaveNode.RUNNING)
 	assert_that(action1.count).is_equal(2)
 	assert_that(action2.count).is_equal(1)
 	assert_that(action3.count).is_equal(1)

@@ -11,7 +11,7 @@ class_name LimiterDecorator extends Decorator
 @export var max_count: int = 0
 
 
-func tick(actor: Node, blackboard: Blackboard) -> int:
+func tick(actor: Node, blackboard: Blackboard, delta: float) -> int:
 	if not get_child_count() == 1:
 		return FAILURE
 
@@ -20,7 +20,8 @@ func tick(actor: Node, blackboard: Blackboard) -> int:
 
 	if current_count < max_count:
 		blackboard.set_value(cache_key, current_count + 1, str(actor.get_instance_id()))
-		var response: int = child.tick(actor, blackboard)
+		var response: int = child.tick(actor, blackboard, delta)
+
 		if can_send_message(blackboard):
 			BeehaveDebuggerMessages.process_tick(child.get_instance_id(), response, blackboard.get_debug_data())
 

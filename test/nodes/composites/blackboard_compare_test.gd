@@ -8,6 +8,7 @@ extends GdUnitTestSuite
 const __source = "res://addons/beehave/nodes/leaves/blackboard_compare.gd"
 const __blackboard = "res://addons/beehave/blackboard.gd"
 
+
 var blackboard_compare: BlackboardCompareCondition
 var actor: Node
 var blackboard: Blackboard
@@ -23,8 +24,7 @@ func before_test() -> void:
 
 func test_comparison_operators() -> void:
 	var data: Dictionary = {
-		["0", "0"]:
-		[
+		["0", "0"]: [
 			[BlackboardCompareCondition.Operators.EQUAL, BeehaveNode.SUCCESS],
 			[BlackboardCompareCondition.Operators.NOT_EQUAL, BeehaveNode.FAILURE],
 			[BlackboardCompareCondition.Operators.GREATER, BeehaveNode.FAILURE],
@@ -32,8 +32,7 @@ func test_comparison_operators() -> void:
 			[BlackboardCompareCondition.Operators.GREATER_EQUAL, BeehaveNode.SUCCESS],
 			[BlackboardCompareCondition.Operators.LESS_EQUAL, BeehaveNode.SUCCESS],
 		],
-		["0", "1"]:
-		[
+		["0", "1"]: [
 			[BlackboardCompareCondition.Operators.EQUAL, BeehaveNode.FAILURE],
 			[BlackboardCompareCondition.Operators.NOT_EQUAL, BeehaveNode.SUCCESS],
 			[BlackboardCompareCondition.Operators.GREATER, BeehaveNode.FAILURE],
@@ -41,8 +40,7 @@ func test_comparison_operators() -> void:
 			[BlackboardCompareCondition.Operators.GREATER_EQUAL, BeehaveNode.FAILURE],
 			[BlackboardCompareCondition.Operators.LESS_EQUAL, BeehaveNode.SUCCESS],
 		],
-		["1", "0"]:
-		[
+		["1", "0"]: [
 			[BlackboardCompareCondition.Operators.EQUAL, BeehaveNode.FAILURE],
 			[BlackboardCompareCondition.Operators.NOT_EQUAL, BeehaveNode.SUCCESS],
 			[BlackboardCompareCondition.Operators.GREATER, BeehaveNode.SUCCESS],
@@ -51,30 +49,30 @@ func test_comparison_operators() -> void:
 			[BlackboardCompareCondition.Operators.LESS_EQUAL, BeehaveNode.FAILURE],
 		]
 	}
-
+	
 	for operands in data:
 		for pair in data[operands]:
 			blackboard_compare = auto_free(load(__source).new())
-
+			
 			var operator: BlackboardCompareCondition.Operators = pair[0]
 			var expected_status: int = pair[1]
-
+			
 			blackboard_compare.left_operand = operands[0]
 			blackboard_compare.right_operand = operands[1]
 			blackboard_compare.operator = operator
-
+			
 			runner = scene_runner(blackboard_compare)
-
+			
 			assert_that(blackboard_compare.tick(actor, blackboard, delta)).is_equal(expected_status)
 
 
 func test_blackboard_access() -> void:
 	blackboard.set_value("direction", Vector3.FORWARD)
-
-	blackboard_compare.left_operand = 'get_value("direction").length()'
+	
+	blackboard_compare.left_operand = "get_value(\"direction\").length()"
 	blackboard_compare.operator = BlackboardCompareCondition.Operators.EQUAL
 	blackboard_compare.right_operand = "1"
-
+	
 	runner = scene_runner(blackboard_compare)
 	assert_that(blackboard_compare.tick(actor, blackboard, delta)).is_equal(BeehaveNode.SUCCESS)
 
@@ -83,7 +81,7 @@ func test_invalid_left_operand_expression() -> void:
 	blackboard_compare.left_operand = "this is invalid!!!"
 	blackboard_compare.operator = BlackboardCompareCondition.Operators.EQUAL
 	blackboard_compare.right_operand = "1"
-
+	
 	runner = scene_runner(blackboard_compare)
 	assert_that(blackboard_compare.tick(actor, blackboard, delta)).is_equal(BeehaveNode.FAILURE)
 
@@ -92,6 +90,6 @@ func test_invalid_right_operand_expression() -> void:
 	blackboard_compare.left_operand = "1"
 	blackboard_compare.operator = BlackboardCompareCondition.Operators.EQUAL
 	blackboard_compare.right_operand = "this is invalid!!!"
-
+	
 	runner = scene_runner(blackboard_compare)
 	assert_that(blackboard_compare.tick(actor, blackboard, delta)).is_equal(BeehaveNode.FAILURE)

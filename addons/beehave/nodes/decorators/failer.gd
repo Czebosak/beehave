@@ -3,15 +3,13 @@
 class_name AlwaysFailDecorator extends Decorator
 
 ## A Failer node will always return a `FAILURE` status code.
-
-
-func tick(actor: Node, blackboard: Blackboard) -> int:
+func tick(actor: Node, blackboard: Blackboard, delta: float) -> int:
 	var c: BeehaveNode = get_child(0)
 
 	if c != running_child:
 		c.before_run(actor, blackboard)
 
-	var response: int = c._safe_tick(actor, blackboard)
+	var response: int = c._safe_tick(actor, blackboard, delta)
 	if can_send_message(blackboard):
 		BeehaveDebuggerMessages.process_tick(c.get_instance_id(), response, blackboard.get_debug_data())
 

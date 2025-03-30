@@ -72,7 +72,6 @@ texture = SubResource("CompressedTexture2D_atdvc")
 [node name="AnotherTree" type="Node" parent="AnotherSprite" node_paths=PackedStringArray("blackboard", "actor")]
 script = ExtResource("4_yb1gg")
 blackboard = NodePath("../../Blackboard")
-custom_monitor = null
 actor = NodePath("..")
 
 [node name="SelectorComposite" type="Node" parent="AnotherSprite/AnotherTree"]

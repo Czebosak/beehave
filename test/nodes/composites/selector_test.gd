@@ -17,7 +17,7 @@ var action1: ActionLeaf
 var action2: ActionLeaf
 var actor: Node
 var blackboard: Blackboard
-
+var delta: float # Default delta so it can run 
 
 func before_test() -> void:
 	tree = auto_free(load(__tree).new())
@@ -36,16 +36,16 @@ func before_test() -> void:
 
 
 func test_always_executing_first_successful_node() -> void:
-	assert_that(selector.tick(actor, blackboard)).is_equal(BeehaveNode.SUCCESS)
-	assert_that(selector.tick(actor, blackboard)).is_equal(BeehaveNode.SUCCESS)
+	assert_that(selector.tick(actor, blackboard, delta)).is_equal(BeehaveNode.SUCCESS)
+	assert_that(selector.tick(actor, blackboard, delta)).is_equal(BeehaveNode.SUCCESS)
 	assert_that(action1.count).is_equal(2)
 	assert_that(action2.count).is_equal(0)
 
 
 func test_execute_second_when_first_is_failing() -> void:
 	action1.status = BeehaveNode.FAILURE
-	assert_that(selector.tick(actor, blackboard)).is_equal(BeehaveNode.SUCCESS)
-	assert_that(selector.tick(actor, blackboard)).is_equal(BeehaveNode.SUCCESS)
+	assert_that(selector.tick(actor, blackboard, delta)).is_equal(BeehaveNode.SUCCESS)
+	assert_that(selector.tick(actor, blackboard, delta)).is_equal(BeehaveNode.SUCCESS)
 	assert_that(action1.count).is_equal(1)
 	assert_that(action2.count).is_equal(2)
 
@@ -53,7 +53,7 @@ func test_execute_second_when_first_is_failing() -> void:
 func test_return_failure_of_none_is_succeeding() -> void:
 	action1.status = BeehaveNode.FAILURE
 	action2.status = BeehaveNode.FAILURE
-	assert_that(selector.tick(actor, blackboard)).is_equal(BeehaveNode.FAILURE)
+	assert_that(selector.tick(actor, blackboard, delta)).is_equal(BeehaveNode.FAILURE)
 	assert_that(action1.count).is_equal(1)
 	assert_that(action2.count).is_equal(1)
 
@@ -61,12 +61,12 @@ func test_return_failure_of_none_is_succeeding() -> void:
 func test_not_interrupt_second_when_first_is_succeeding() -> void:
 	action1.status = BeehaveNode.FAILURE
 	action2.status = BeehaveNode.RUNNING
-	assert_that(selector.tick(actor, blackboard)).is_equal(BeehaveNode.RUNNING)
+	assert_that(selector.tick(actor, blackboard, delta)).is_equal(BeehaveNode.RUNNING)
 	assert_that(action1.count).is_equal(1)
 	assert_that(action2.count).is_equal(1)
 
 	action1.status = BeehaveNode.SUCCESS
-	assert_that(selector.tick(actor, blackboard)).is_equal(BeehaveNode.RUNNING)
+	assert_that(selector.tick(actor, blackboard, delta)).is_equal(BeehaveNode.RUNNING)
 	assert_that(action1.count).is_equal(1)
 	assert_that(action2.count).is_equal(2)
 
@@ -74,12 +74,12 @@ func test_not_interrupt_second_when_first_is_succeeding() -> void:
 func test_not_interrupt_second_when_first_is_running() -> void:
 	action1.status = BeehaveNode.FAILURE
 	action2.status = BeehaveNode.RUNNING
-	assert_that(selector.tick(actor, blackboard)).is_equal(BeehaveNode.RUNNING)
+	assert_that(selector.tick(actor, blackboard, delta)).is_equal(BeehaveNode.RUNNING)
 	assert_that(action1.count).is_equal(1)
 	assert_that(action2.count).is_equal(1)
 
 	action1.status = BeehaveNode.RUNNING
-	assert_that(selector.tick(actor, blackboard)).is_equal(BeehaveNode.RUNNING)
+	assert_that(selector.tick(actor, blackboard, delta)).is_equal(BeehaveNode.RUNNING)
 	assert_that(action1.count).is_equal(1)
 	assert_that(action2.count).is_equal(2)
 
@@ -87,8 +87,8 @@ func test_not_interrupt_second_when_first_is_running() -> void:
 func test_tick_again_when_child_returns_running() -> void:
 	action1.status = BeehaveNode.FAILURE
 	action2.status = BeehaveNode.RUNNING
-	assert_that(selector.tick(actor, blackboard)).is_equal(BeehaveNode.RUNNING)
-	assert_that(selector.tick(actor, blackboard)).is_equal(BeehaveNode.RUNNING)
+	assert_that(selector.tick(actor, blackboard, delta)).is_equal(BeehaveNode.RUNNING)
+	assert_that(selector.tick(actor, blackboard, delta)).is_equal(BeehaveNode.RUNNING)
 	assert_that(action1.count).is_equal(1)
 	assert_that(action2.count).is_equal(2)
 
@@ -111,13 +111,13 @@ func test_not_interrupt_first_after_finished() -> void:
 	action2.status = BeehaveNode.FAILURE
 	action3.status = BeehaveNode.RUNNING
 
-	assert_that(selector.tick(actor, blackboard)).is_equal(BeehaveNode.RUNNING)
+	assert_that(selector.tick(actor, blackboard, delta)).is_equal(BeehaveNode.RUNNING)
 	assert_that(action1.count).is_equal(1)
 	assert_that(action2.count).is_equal(0)
 	assert_that(action3.count).is_equal(0)
 
 	action1.status = BeehaveNode.FAILURE
-	assert_that(selector.tick(actor, blackboard)).is_equal(BeehaveNode.RUNNING)
+	assert_that(selector.tick(actor, blackboard, delta)).is_equal(BeehaveNode.RUNNING)
 	assert_that(action1.count).is_equal(2)
 	assert_that(action2.count).is_equal(1)
 	assert_that(action3.count).is_equal(1)

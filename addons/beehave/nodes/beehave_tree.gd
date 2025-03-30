@@ -165,15 +165,15 @@ func _on_scene_tree_node_added_removed(node: Node, is_added: bool) -> void:
 			)
 
 
-func _physics_process(_delta: float) -> void:
-	_process_internally()
+func _physics_process(delta: float) -> void:
+	_process_internally(delta)
 
 
-func _process(_delta: float) -> void:
-	_process_internally()
+func _process(delta: float) -> void:
+	_process_internally(delta)
 
 
-func _process_internally() -> void:
+func _process_internally(delta: float) -> void:
 	if Engine.is_editor_hint():
 		return
 
@@ -192,7 +192,7 @@ func _process_internally() -> void:
 		BeehaveDebuggerMessages.process_begin(get_instance_id(), blackboard.get_debug_data())
 
 	if self.get_child_count() == 1:
-		tick()
+		tick(delta)
 
 	if _can_send_message:
 		BeehaveDebuggerMessages.process_end(get_instance_id(), blackboard.get_debug_data())
@@ -201,14 +201,15 @@ func _process_internally() -> void:
 	_process_time_metric_value = Time.get_ticks_usec() - start_time
 
 
-func tick() -> int:
+func tick(delta: float) -> int:
 	if actor == null or get_child_count() == 0:
 		return FAILURE
+
 	var child := self.get_child(0)
 	if status != RUNNING:
 		child.before_run(actor, blackboard)
 
-	status = child.tick(actor, blackboard)
+	status = child.tick(actor, blackboard, delta)
 	if _can_send_message:
 		BeehaveDebuggerMessages.process_tick(child.get_instance_id(), status, blackboard.get_debug_data())
 		BeehaveDebuggerMessages.process_tick(get_instance_id(), status, blackboard.get_debug_data())

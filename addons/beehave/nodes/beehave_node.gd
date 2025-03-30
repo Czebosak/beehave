@@ -18,7 +18,7 @@ func _get_configuration_warnings() -> PackedStringArray:
 
 ## Executes this node and returns a status code.
 ## This method must be overwritten.
-func tick(actor: Node, blackboard: Blackboard) -> int:
+func tick(actor: Node, blackboard: Blackboard, delta: float) -> int:
 	return SUCCESS
 
 
@@ -46,8 +46,8 @@ func can_send_message(blackboard: Blackboard) -> bool:
 	return blackboard.get_value("can_send_message", false)
 
 
-func _safe_tick(actor: Node, blackboard: Blackboard) -> int:
-	var response = tick(actor, blackboard)
+func _safe_tick(actor: Node, blackboard: Blackboard, delta: float) -> int:
+	var response = tick(actor, blackboard, delta)
 	if not response is int:
 		push_error("All tick methods must return an int, got %s" % response)
 		return FAILURE

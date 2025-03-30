@@ -16,7 +16,7 @@ var action2: ActionLeaf
 var actor: Node
 var sequence: SequenceReactiveComposite
 var blackboard: Blackboard
-
+var delta: float # Default delta so it can run 
 
 func before_test() -> void:
 	tree = auto_free(load(__tree).new())
@@ -100,8 +100,8 @@ func test_keeps_running_child_until_failure() -> void:
 func test_restart_when_child_returns_failure() -> void:
 	action1.status = BeehaveNode.SUCCESS
 	action2.status = BeehaveNode.FAILURE
-	assert_that(sequence.tick(actor, blackboard)).is_equal(BeehaveNode.FAILURE)
-	assert_that(sequence.tick(actor, blackboard)).is_equal(BeehaveNode.FAILURE)
+	assert_that(sequence.tick(actor, blackboard, delta)).is_equal(BeehaveNode.FAILURE)
+	assert_that(sequence.tick(actor, blackboard, delta)).is_equal(BeehaveNode.FAILURE)
 	assert_that(action1.count).is_equal(2)
 	assert_that(action2.count).is_equal(2)
 
@@ -109,8 +109,8 @@ func test_restart_when_child_returns_failure() -> void:
 func test_restart_again_when_child_returns_running() -> void:
 	action1.status = BeehaveNode.SUCCESS
 	action2.status = BeehaveNode.RUNNING
-	assert_that(sequence.tick(actor, blackboard)).is_equal(BeehaveNode.RUNNING)
-	assert_that(sequence.tick(actor, blackboard)).is_equal(BeehaveNode.RUNNING)
+	assert_that(sequence.tick(actor, blackboard, delta)).is_equal(BeehaveNode.RUNNING)
+	assert_that(sequence.tick(actor, blackboard, delta)).is_equal(BeehaveNode.RUNNING)
 	assert_that(action1.count).is_equal(2)
 	assert_that(action2.count).is_equal(2)
 

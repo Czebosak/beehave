@@ -11,7 +11,7 @@ class_name TimeLimiterDecorator extends Decorator
 @onready var cache_key: String = "time_limiter_%s" % self.get_instance_id()
 
 
-func tick(actor: Node, blackboard: Blackboard) -> int:
+func tick(actor: Node, blackboard: Blackboard, delta: float) -> int:
 	if not get_child_count() == 1:
 		return FAILURE
 
@@ -21,7 +21,8 @@ func tick(actor: Node, blackboard: Blackboard) -> int:
 	if time_left < wait_time:
 		time_left += get_physics_process_delta_time()
 		blackboard.set_value(cache_key, time_left, str(actor.get_instance_id()))
-		var response: int = child.tick(actor, blackboard)
+		var response: int = child.tick(actor, blackboard, delta)
+
 		if can_send_message(blackboard):
 			BeehaveDebuggerMessages.process_tick(child.get_instance_id(), response, blackboard.get_debug_data())
 

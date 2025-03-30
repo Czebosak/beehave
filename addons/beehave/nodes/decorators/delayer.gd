@@ -13,7 +13,7 @@ class_name DelayDecorator
 @onready var cache_key = "time_limiter_%s" % self.get_instance_id()
 
 
-func tick(actor: Node, blackboard: Blackboard) -> int:
+func tick(actor: Node, blackboard: Blackboard, delta: float) -> int:
 	var c: BeehaveNode = get_child(0)
 	var total_time: float = blackboard.get_value(cache_key, 0.0, str(actor.get_instance_id()))
 	var response: int
@@ -30,7 +30,7 @@ func tick(actor: Node, blackboard: Blackboard) -> int:
 		if can_send_message(blackboard):
 			BeehaveDebuggerMessages.process_tick(self.get_instance_id(), response, blackboard.get_debug_data())
 	else:
-		response = c._safe_tick(actor, blackboard)
+		response = c._safe_tick(actor, blackboard, delta)
 
 		if can_send_message(blackboard):
 			BeehaveDebuggerMessages.process_tick(c.get_instance_id(), response, blackboard.get_debug_data())

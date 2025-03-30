@@ -54,3 +54,33 @@ In this example, the leaf nodes (`IsEnemyVisible`, `AttackEnemy`, `IsWanderPoint
 To learn more about specific leaf node types, continue to:
 - [Action Leaf](manual/action_leaf.md)
 - [Condition Leaf](manual/condition_leaf.md)
+=======
+```gdscript
+func before_run(actor: Node, blackboard: Blackboard) -> void:
+    # Let's say we have an ActionLeaf called "EquipItem" that takes in an item name
+    item_name = "enchanted sword"
+    action_node = EquipItem.new(item_name)
+    
+    # Print a message to the console
+    print(actor.name + " equipping " + item_name + "...")
+    
+    # Execute the action and return the status code
+    action_node.tick(actor, blackboard, delta)
+```
+
+## `after_run` Method Example
+
+This method is called after the last time the node is ticked and returns either `SUCCESS` or `FAILURE`. You can use this method to perform any cleanup or reset any state that was set up in the `before_run` method:
+
+```gdscript
+func after_run(actor: Node, blackboard: Blackboard) -> void:
+    # Let's say we have an ActionLeaf called "GainExperience" that takes in an amount of experience
+    exp_gained = 100
+    action_node = GainExperience.new(exp_gained)
+    
+    # Print a message to the console
+    print(actor.name + " gained " + str(exp_gained) + " experience points!")
+    
+    # Execute the action
+    action_node.tick(actor, blackboard, delta)
+```
