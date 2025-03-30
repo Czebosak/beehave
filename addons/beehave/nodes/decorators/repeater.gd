@@ -13,14 +13,14 @@ func before_run(actor: Node, blackboard: Blackboard):
 	current_count = 0
 
 
-func tick(actor: Node, blackboard: Blackboard) -> int:
+func tick(actor: Node, blackboard: Blackboard, delta: float) -> int:
 	var child: BeehaveNode = get_child(0)
 
 	if current_count < repetitions:
 		if running_child == null:
 			child.before_run(actor, blackboard)
 
-		var response: int = child.tick(actor, blackboard)
+		var response: int = child.tick(actor, blackboard, delta)
 
 		if can_send_message(blackboard):
 			BeehaveDebuggerMessages.process_tick(child.get_instance_id(), response, blackboard.get_debug_data())
