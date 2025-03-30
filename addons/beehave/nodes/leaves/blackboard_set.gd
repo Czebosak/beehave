@@ -19,7 +19,7 @@ func tick(actor: Node, blackboard: Blackboard, delta: float) -> int:
 	if _key_expression.has_execute_failed():
 		return FAILURE
 
-	var value_value: Variant = _value_expression.execute([], blackboard)
+	var value_value: Variant = _value_expression.execute([actor], blackboard)
 
 	if _value_expression.has_execute_failed():
 		return FAILURE

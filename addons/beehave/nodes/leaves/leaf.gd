@@ -25,7 +25,7 @@ func _get_configuration_warnings() -> PackedStringArray:
 
 func _parse_expression(source: String) -> Expression:
 	var result: Expression = Expression.new()
-	var error: int = result.parse(source)
+	var error: int = result.parse(source, ["actor"])
 
 	if not Engine.is_editor_hint() and error != OK:
 		push_error(
